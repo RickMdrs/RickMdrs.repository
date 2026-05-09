@@ -1,0 +1,69 @@
+---
+title: Rage Store
+summary: Motor Automatizado de E-commerce e Provisionamento
+year: "2025"
+status: "Em produção"
+cover: /033.png
+coverAlt: Painel de compras do Rage Store
+stack:
+  - Node.js
+  - Discord.js
+  - API do Mercado Pago
+  - SQLite
+links: []
+---
+
+## <span id="problema">Problema</span>
+
+{/* PREENCHER: descreva o problema que o Rage Store resolve */}
+
+## <span id="solucao">Solução</span>
+
+{/* PREENCHER: explique a solução */}
+
+<Highlight title="Impacto">
+{/* PREENCHER: métrica ou resultado */}
+</Highlight>
+
+## <span id="stack">Stack</span>
+
+<Stack items={[
+  "Node.js",
+  "Discord.js",
+  "API do Mercado Pago",
+  "SQLite"
+]} />
+
+## <span id="highlights">Highlights</span>
+
+- {/* PREENCHER */}
+- {/* PREENCHER */}
+- {/* PREENCHER */}
+
+## <span id="arquitetura">Arquitetura</span>
+
+<Mermaid chart={`flowchart LR
+  U[Usuário] --> D[Bot Discord]
+  D --> API[Node.js API]
+  API --> MP[Mercado Pago]
+  MP --> API
+  API --> DB[(SQLite)]
+  API --> P[Provisionamento]
+`} />
+
+## <span id="snippet">Snippet</span>
+
+<Snippet
+  filename="bot/checkout.js"
+  language="javascript"
+  code={`
+async function handleCheckout(interaction, productId) {
+  const product = await db.getProduct(productId);
+  const payment = await mercadopago.preferences.create({
+    items: [{ title: product.name, unit_price: product.price, quantity: 1 }],
+    external_reference: interaction.user.id,
+  });
+  await interaction.reply({ content: payment.init_point, ephemeral: true });
+}
+`}
+/>

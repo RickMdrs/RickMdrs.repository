@@ -1,0 +1,107 @@
+---
+title: Pantero IA
+summary: Aplicativo desktop que automatiza a operação de afiliados profissionais — monitoramento de grupos, conversão de links em 10+ plataformas e distribuição humanizada em escala.
+year: "2025"
+status: "Ativo"
+cover: /007.png
+coverAlt: Dashboard do Pantero IA
+stack:
+  - Python
+  - FastAPI
+  - Selenium
+  - SQLite
+  - Next.js
+  - React
+  - TypeScript
+  - Tailwind
+  - shadcn/ui
+  - Tauri
+  - Rust
+  - KeyAuth
+links:
+  - label: Site
+    href: https://pantero.ai
+---
+
+## <span id="problema">Problema</span>
+
+Afiliado profissional não escala manualmente. Capturar links em grupos do Telegram, converter para afiliado em cada plataforma e republicar em canais próprios consome o dia. Cada rede de afiliados tem um modelo de geração de link diferente, e WhatsApp/Telegram têm regras anti-bot que punem qualquer envio mecânico.
+
+## <span id="solucao">Solução</span>
+
+Pantero unifica todo esse pipeline em um único app desktop. Detecta a plataforma do link, despacha pro gerador correto — Selenium humanizado, API REST ou substituição de domínio — e republica com comportamento humanizado: delays variáveis, simulação de digitação, perfil de browser persistente. Sustenta operação 24/7 sem trigger de antifraude.
+
+<Highlight title="Impacto">
+10+ redes de afiliados e 4 modelos de geração de link unificados em um pipeline. Operação 24/7 que substitui o trabalho manual repetitivo do afiliado em escala.
+</Highlight>
+
+## <span id="stack">Stack</span>
+
+<Stack items={[
+  "Python",
+  "FastAPI",
+  "Selenium",
+  "SQLite",
+  "Next.js",
+  "React",
+  "TypeScript",
+  "Tailwind",
+  "shadcn/ui",
+  "Tauri",
+  "Rust",
+  "KeyAuth"
+]} />
+
+## <span id="highlights">Highlights</span>
+
+- Detecção automática de plataforma via 10+ padrões de URL mapeados
+- 4 modelos heterogêneos de geração de link afiliado (Selenium share, REST API, deep link, substituição de domínio) unificados num router único
+- Browser automation com perfil Edge persistente — clica em "Compartilhar" como humano para gerar link nativo da Amazon e Mercado Livre
+- Anti-ban WhatsApp: intervalos randomizados parametrizáveis, jitter, simulação de digitação
+- Painel desktop (Tauri) com logs em streaming, analytics ao vivo e controle de execução
+- Licenciamento e tiers (basic/pro/elite) via KeyAuth com gating de features no backend
+- Histórico persistente em SQLite com replay e inspeção de envios
+
+## <span id="arquitetura">Arquitetura</span>
+
+<Mermaid chart={`flowchart TD
+  TG[Telegram Watcher] --> LP[Link Parser]
+  LP --> PR[Platform Router]
+  PR --> S[Selenium Share<br/>Amazon · ML]
+  PR --> A[REST API<br/>Awin · Shopee · AliExpress]
+  PR --> D[Deep Link<br/>códigos]
+  PR --> M[Substituição<br/>Magalu]
+  S --> H[Humanized Sender<br/>jitter · anti-ban]
+  A --> H
+  D --> H
+  M --> H
+  H --> WA[WhatsApp Channels]
+  H --> TC[Telegram Channels]
+`} />
+
+## <span id="snippet">Snippet</span>
+
+<Snippet
+  filename="backend/plataformas.py"
+  language="python"
+  code={`
+# Roteamento por modelo de afiliação
+def gerar_link(plat_key: str, url: str, cfg: dict) -> str:
+    info = PLATAFORMAS[plat_key]
+    modelo = info["modelo"]
+
+    if modelo == "selenium_share":            # Amazon, Mercado Livre
+        return browser.click_share(url, perfil=cfg["perfil_edge"])
+
+    if modelo == "rede_api" and info["rede"] == "awin":
+        return awin.deep_link(url, publisher_id=cfg["awin_id"])
+
+    if modelo == "rede_api" and info["rede"] == "shopee":
+        return shopee.short_link(url, app_id=cfg["shopee"]["id"])
+
+    if modelo == "manual":                    # Magalu
+        return magalu.substituir_loja(url, loja=cfg["magalu_loja"])
+
+    raise PlataformaNaoSuportada(plat_key)
+`}
+/>
